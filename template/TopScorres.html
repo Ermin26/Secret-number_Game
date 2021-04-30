@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Top scorers{% endblock %}
+
+{% block content %}
+    <div class="container text-center">
+        <ul class="nav nav-pills navbar-dark bg-dark nav-justified mb-5" style="border:1px solid black">
+             <li class="nav-item">
+                 <a class="nav-link" aria-current="page" href="/">Home</a>
+             </li>
+
+             <li class="nav-item">
+                 <a class="nav-link active" href="/scorers">Top scorers</a>
+             </li>
+
+             <li class="nav-item">
+                 <a class="nav-link" href="/play">Play game</a>
+             </li>
+
+             <li class="nav-item">
+                <a class="nav-link" href="/profile">My profile</a>
+             </li>
+
+             <li class="nav-item">
+                <a class="nav-link" href="/messages">Messages</a>
+             </li>
+
+             <li class="nav-item">
+                 <a class="nav-link" href="/logout">Log out</a>
+             </li>
+         </ul>
+
+             <br>
+             <br>
+             <br>
+
+
+        <table class="table table-striped" style="border: 1px solid black">
+            <tr>
+                <th class="table-info"><h2>User</h2></th>
+                <th class="table-info"><h2>Games played</h2></th>
+                <th class="table-info"><h2>Wins</h2></th>
+                <th class="table-info"><h2>Give up</h2></th>
+                <th class="table-info"><h2>Points</h2></th>
+            </tr>
+        {% for user in users %}
+            <tr>
+                <td><h4>{{ user.name }}</h4></td>
+                <td><h4>{{ user.games }}</h4></td>
+                <td><h4>{{ user.wins }}</h4></td>
+                <td><h4>{{ user.losses }}</h4></td>
+                <td><h4>{{ user.score }}</h4></td>
+            </tr>
+        {% endfor %}
+        </table>
+
+
+    </div>
+{% endblock content %}
