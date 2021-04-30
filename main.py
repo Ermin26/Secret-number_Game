@@ -47,13 +47,7 @@ def home():
     else:
         user = None
 
-    return render_template(
-        "home.html",
-        user=user,
-        location=location.title(),
-        temperature=temperature,
-        weather=weather,
-    )
+    return render_template("index.html", user=user, location=location.title(), temperature=temperature, weather=weather)
 
 
 @app.route("/please-register", methods=["GET", "POST"])
@@ -75,7 +69,7 @@ def login():
 
     if hashed_pwd != user.password:
         flash(f"Wrong user name, email or password. Try again please.")
-        return redirect(url_for("home"))
+        return redirect(url_for("index.html"))
 
     else:
         session_token = str(uuid4())
@@ -84,7 +78,7 @@ def login():
         db.add(user)
         db.commit()
 
-        response = make_response(redirect(url_for("home")))
+        response = make_response(redirect(url_for("index.html")))
         response.set_cookie("session_token", session_token)
 
         return response
@@ -136,7 +130,7 @@ def register():
             db.add(user)
             db.commit()
 
-            response = make_response(redirect(url_for("home")))
+            response = make_response(redirect(url_for("index.html")))
             response.set_cookie(
                 "session_token",
                 session_token,
@@ -273,7 +267,7 @@ def give_up():
     weather = tempwat["weather"][0]["main"]
 
     return render_template(
-        "home.html",
+        "index.html",
         user=user,
         location=location.title(),
         temperature=temperature,
@@ -311,7 +305,7 @@ def profile():
     else:
 
         return render_template(
-            "home.html",
+            "index.html",
             location=location.title(),
             temperature=temperature,
             weather=weather,
@@ -334,7 +328,7 @@ def edit():
     user = db.query(User).filter_by(session_token=session_token).first()
 
     if not user:
-        return redirect(url_for("home"))
+        return redirect(url_for("index.html"))
 
     if request.method == "POST":
         name = request.form.get("name")
@@ -373,7 +367,7 @@ def delete():
 
     if not user:
         return render_template(
-            "home.html",
+            "index.html",
             user=user,
             location=location.title(),
             temperature=temperature,
@@ -385,7 +379,7 @@ def delete():
             db.delete(user)
             db.commit()
 
-        response = make_response(redirect(url_for("home")))
+        response = make_response(redirect(url_for("index.html")))
         response.set_cookie("session_token", "")
 
         return response
@@ -428,7 +422,7 @@ def mes():
     else:
         "Please sign in or login if you want to go on that page."
         return render_template(
-            "home.html",
+            "index.html",
             user=user,
             messages=messages,
             location=location.title(),
@@ -466,7 +460,7 @@ def received():
     else:
         "Please sign in or login if you want to go on that page."
         return render_template(
-            "home.html",
+            "index.html",
             user=user,
             messages=messages,
             location=location.title(),
@@ -504,7 +498,7 @@ def allusers():
     else:
         "Please sign in or login if you want to go on that page."
         return render_template(
-            "home.html",
+            "index.html",
             user=user,
             messages=messages,
             location=location.title(),
@@ -528,7 +522,7 @@ def logout():
         db.add(user)
         db.commit()
 
-    response = make_response(redirect(url_for("home")))
+    response = make_response(redirect(url_for("index.html")))
     response.set_cookie("session_token", "")
 
     return response
