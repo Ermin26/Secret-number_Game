@@ -16,7 +16,7 @@ from flask import (
     make_response,
     flash,
 )
-from models import db, User, Message
+from modules import db, User, Message
 from uuid import uuid4
 
 
