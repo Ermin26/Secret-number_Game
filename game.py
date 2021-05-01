@@ -30,13 +30,6 @@ db.create_all()
 
 @app.route("/", methods=["GET"])
 def home():
-    location = request.args.get("location", "Maribor")
-
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-    weather = tempwat["weather"][0]["main"]
 
     session_token = request.cookies.get("session_token")
 
@@ -47,7 +40,7 @@ def home():
     else:
         user = None
 
-    return render_template("index.html", user=user, location=location.title(), temperature=temperature, weather=weather)
+    return render_template("index.html", user=user)
 
 
 @app.route("/please-register", methods=["GET", "POST"])
@@ -86,7 +79,6 @@ def login():
 
 @app.route("/register", methods=["POST"])
 def register():
-    location = request.args.get("location", "Maribor")
 
     name = request.form.get("name")
     email = request.form.get("email")
@@ -121,7 +113,6 @@ def register():
                 score=score,
                 online=True,
                 offline=False,
-                location=location,
             )
 
             session_token = str(uuid4())
@@ -144,50 +135,22 @@ def register():
 
 @app.route("/play", methods=["GET", "POST"])
 def play():
-    location = request.args.get("location", "Maribor")
 
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-
-    weather = tempwat["weather"][0]["main"]
     session_token = request.cookies.get("session_token")
 
     user = db.query(User).filter_by(session_token=session_token).first()
 
-    return render_template(
-        "playGame.html",
-        user=user,
-        location=location.title(),
-        temperature=temperature,
-        weather=weather,
-    )
+    return render_template("playGame.html", user=user)
 
 
 @app.route("/scorers", methods=["GET", "POST"])
 def score():
-    location = request.args.get("location", "Maribor")
-
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-
-    weather = tempwat["weather"][0]["main"]
 
     session_token = request.cookies.get("session_token")
     user = db.query(User).filter_by(session_token=session_token).first()
     users = db.query(User).order_by(User.score.desc()).all()
 
-    return render_template(
-        "TopScores.html",
-        user=user,
-        users=users,
-        location=location.title(),
-        temperature=temperature,
-        weather=weather,
-    )
+    return render_template("TopScores.html", user=user, users=users)
 
 
 @app.route("/result", methods=["GET", "POST"])
@@ -215,19 +178,7 @@ def result():
         db.add(user)
         db.commit()
 
-        location = request.args.get("location", "Maribor")
-        r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-        tempwat = r.json()
-        temperature = tempwat["main"]["temp"]
-        weather = tempwat["weather"][0]["main"]
-
-        return render_template(
-            "success.html",
-            user=user,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
-        )
+        return render_template("success.html", user=user)
 
     elif guess > user.secret_number:
 
@@ -260,33 +211,12 @@ def give_up():
     db.add(user)
     db.commit()
 
-    location = request.args.get("location", "Maribor")
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-    weather = tempwat["weather"][0]["main"]
-
-    return render_template(
-        "index.html",
-        user=user,
-        location=location.title(),
-        temperature=temperature,
-        weather=weather,
-    )
+    return render_template("index.html", user=user)
 
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
     name = request.form.get("name")
-
-    location = request.args.get("location", "Maribor")
-
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-
-    weather = tempwat["weather"][0]["main"]
 
     session_token = request.cookies.get("session_token")
 
@@ -297,31 +227,17 @@ def profile():
             "profile.html",
             user=user,
             name=name,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
         )
 
     else:
 
         return render_template(
             "index.html",
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
         )
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
 def edit():
-    location = request.args.get("location", "Maribor")
-
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-
-    weather = tempwat["weather"][0]["main"]
 
     session_token = request.cookies.get("session_token")
 
@@ -353,9 +269,6 @@ def edit():
     return render_template(
         "edit.html",
         user=user,
-        location=location.title(),
-        temperature=temperature,
-        weather=weather,
     )
 
 
@@ -369,9 +282,6 @@ def delete():
         return render_template(
             "index.html",
             user=user,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
         )
 
     if request.method == "POST":
@@ -384,25 +294,11 @@ def delete():
 
         return response
 
-    return render_template(
-        "profile.html",
-        user=user,
-        location=location.title(),
-        temperature=temperature,
-        weather=weather,
-    )
+    return render_template("profile.html", user=user)
 
 
 @app.route("/messages", methods=["GET", "POST"])
 def mes():
-    location = request.args.get("location", "Maribor")
-
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-
-    weather = tempwat["weather"][0]["main"]
 
     session_token = request.cookies.get("session_token")
 
@@ -410,14 +306,7 @@ def mes():
     messages = db.query(Message).filter_by(reciver_id=user.id).all()
 
     if user:
-        return render_template(
-            "messages.html",
-            user=user,
-            messages=messages,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
-        )
+        return render_template("messages.html", user=user)
 
     else:
         "Please sign in or login if you want to go on that page."
@@ -425,22 +314,11 @@ def mes():
             "index.html",
             user=user,
             messages=messages,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
         )
 
 
 @app.route("/received", methods=["GET", "POST"])
 def received():
-    location = request.args.get("location", "Maribor")
-
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-
-    weather = tempwat["weather"][0]["main"]
 
     session_token = request.cookies.get("session_token")
 
@@ -451,34 +329,15 @@ def received():
         return render_template(
             "received.html",
             user=user,
-            messages=messages,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
         )
 
     else:
         "Please sign in or login if you want to go on that page."
-        return render_template(
-            "index.html",
-            user=user,
-            messages=messages,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
-        )
+        return render_template("index.html", user=user, messages=messages)
 
 
 @app.route("/allusers", methods=["GET", "POST"])
 def allusers():
-    location = request.args.get("location", "Maribor")
-
-    r = requests.get(f"{OWA}?q={location}&units=metric&appid={API_KEY}")
-
-    tempwat = r.json()
-    temperature = tempwat["main"]["temp"]
-
-    weather = tempwat["weather"][0]["main"]
 
     session_token = request.cookies.get("session_token")
 
@@ -490,9 +349,6 @@ def allusers():
             "users.html",
             user=user,
             users=users,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
         )
 
     else:
@@ -501,9 +357,6 @@ def allusers():
             "index.html",
             user=user,
             messages=messages,
-            location=location.title(),
-            temperature=temperature,
-            weather=weather,
         )
 
 

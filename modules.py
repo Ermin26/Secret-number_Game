@@ -23,7 +23,6 @@ class User(db.Model):
     offline = db.Column(db.Boolean, default=True)
     deleted = db.Column(db.Boolean, default=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
-    location = db.Column(db.String)
 
 
 
