@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship
 
 db = SQLAlchemy(os.getenv("DATABASE_URL", "sqlite:///users.sqlite"))
 
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
