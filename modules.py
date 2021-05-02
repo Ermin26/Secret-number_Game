@@ -4,7 +4,8 @@ from sqla_wrapper import SQLAlchemy
 from sqlalchemy import Integer, ForeignKey, String, Column
 from sqlalchemy.orm import relationship
 
-db = SQLAlchemy(os.getenv("DATABASE_URL", "sqlite:///users.sqlite"))
+db = SQLAlchemy(os.getenv("DATABASE_URL", "sqlite:///game.sqlite"))
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -22,7 +23,6 @@ class User(db.Model):
     offline = db.Column(db.Boolean, default=True)
     deleted = db.Column(db.Boolean, default=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
-
 
 
 class Message(db.Model):
