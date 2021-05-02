@@ -62,7 +62,7 @@ def login():
 
     if hashed_pwd != user.password:
         flash(f"Wrong user name, email or password. Try again please.")
-        return redirect(url_for("index.html"))
+        return redirect(url_for("home"))
 
     else:
         session_token = str(uuid4())
@@ -71,7 +71,7 @@ def login():
         db.add(user)
         db.commit()
 
-        response = make_response(redirect(url_for("index.html")))
+        response = make_response(redirect(url_for("home")))
         response.set_cookie("session_token", session_token)
 
         return response
@@ -121,7 +121,7 @@ def register():
             db.add(user)
             db.commit()
 
-            response = make_response(redirect(url_for("index.html")))
+            response = make_response(redirect(url_for("home")))
             response.set_cookie(
                 "session_token",
                 session_token,
@@ -244,7 +244,7 @@ def edit():
     user = db.query(User).filter_by(session_token=session_token).first()
 
     if not user:
-        return redirect(url_for("index.html"))
+        return redirect(url_for("home"))
 
     if request.method == "POST":
         name = request.form.get("name")
@@ -289,7 +289,7 @@ def delete():
             db.delete(user)
             db.commit()
 
-        response = make_response(redirect(url_for("index.html")))
+        response = make_response(redirect(url_for("home")))
         response.set_cookie("session_token", "")
 
         return response
@@ -375,7 +375,7 @@ def logout():
         db.add(user)
         db.commit()
 
-    response = make_response(redirect(url_for("index.html")))
+    response = make_response(redirect(url_for("home")))
     response.set_cookie("session_token", "")
 
     return response
