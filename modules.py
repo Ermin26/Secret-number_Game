@@ -5,7 +5,7 @@ from sqlalchemy import Integer, ForeignKey, String, Column
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
-db = SQLAlchemy(os.getenv("DATABASE_URL", "sqlite:///game.sqlite"))
+db = SQLAlchemy(os.getenv("DATABASE_URL", "postgresql:///game.sqlite"))
 
 
 class User(db.Model):
