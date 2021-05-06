@@ -2,6 +2,7 @@ import os
 import datetime
 from sqla_wrapper import SQLAlchemy
 from sqlalchemy import Integer, ForeignKey, String, Column
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
 db = SQLAlchemy(os.getenv("DATABASE_URL", "sqlite:///game.sqlite"))
