@@ -24,7 +24,7 @@ OWA = "https://api.openweathermap.org/data/2.5/weather"
 API_KEY = os.getenv("API_KEY")
 
 app = Flask(__name__)
-app.secret_key = os.getenv("GAME_KEY")
+app.secret_key = "555-444"
 db.create_all()
 
 
